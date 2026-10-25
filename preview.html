@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TechBlog AEM - Component Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: "Inter", sans-serif; background: #f4f4f4; color: #000; min-height: 100vh; }
+
+    .preview-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: #000; color: #fff;
+      padding: 0.6rem 2rem;
+      display: flex; align-items: center; gap: 1rem;
+      border-bottom: 3px solid #d90429; font-size: 0.85rem; font-weight: 600;
+    }
+    .preview-bar .badge {
+      background: #d90429; color: #fff;
+      padding: 0.2rem 0.6rem; border-radius: 4px;
+      font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .preview-bar nav { display: flex; gap: 1.2rem; margin-left: auto; }
+    .preview-bar nav a { color: #fff; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; }
+    .preview-bar nav a:hover { opacity: 1; color: #d90429; }
+
+    .page-wrapper { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    .section-label {
+      display: inline-block; background: #000; color: #fff;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 0.2rem 0.6rem; border-radius: 3px 3px 0 0; margin-bottom: 0;
+    }
+    .component-block {
+      margin-bottom: 2.5rem; border-radius: 0 6px 6px 6px;
+      overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); background: #fff;
+    }
+
+    /* === ACTUAL COMPONENT STYLES (from blog.css) === */
+    :root { --tb-black: #000; --tb-white: #fff; --tb-red: #d90429; }
+
+    .tb-head { background: #fff; color: #000; padding: 1.5rem 1.8rem; border-bottom: 4px solid #d90429; }
+    .tb-head h1 { font-size: 2.4rem; font-weight: 800; margin: 0 0 0.4rem; letter-spacing: -0.5px; line-height: 1.15; }
+    .tb-meta { color: #000; font-size: 0.9rem; margin: 0 0 1rem; }
+    .tb-meta strong { color: #d90429; }
+    .tb-body { line-height: 1.8; white-space: pre-line; color: #000; }
+
+    .tb-code { background: #000; color: #fff; border-left: 5px solid #d90429; border-radius: 6px; padding: 1rem 1.2rem; overflow-x: auto; }
+    .tb-lang { background: #d90429; color: #fff; padding: 0.15rem 0.7rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .tb-code pre { margin: 0.7rem 0 0; color: #fff; font-family: "JetBrains Mono", monospace; font-size: 0.88rem; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+
+    .tb-author { background: #fff; color: #000; border: 2px solid #000; border-left: 8px solid #d90429; padding: 1rem 1.3rem; border-radius: 4px; }
+    .tb-author h3 { margin-top: 0; margin-bottom: 0.4rem; font-size: 1.1rem; }
+    .tb-author p { margin-bottom: 0.8rem; line-height: 1.6; color: #333; }
+    .tb-author a { color: #000; font-weight: 700; margin-right: 1rem; text-decoration: underline; text-decoration-color: #d90429; text-underline-offset: 4px; transition: color 0.2s; }
+    .tb-author a:hover { color: #d90429; }
+
+    .tb-tags { list-style: none; display: flex; gap: 0.5rem; padding: 0; flex-wrap: wrap; }
+    .tb-tags li { background: #000; color: #fff; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: default; transition: background 0.2s; }
+    .tb-tags li:hover { background: #d90429; }
+
+    .inner { padding: 1.2rem 1.4rem; }
+  </style>
+</head>
+<body>
+
+  <div class="preview-bar">
+    <span class="badge">Preview</span>
+    <span>TechBlog AEM - Component Preview</span>
+    <nav>
+      <a href="#article-header">Article Header</a>
+      <a href="#code-snippet">Code Snippet</a>
+      <a href="#author-bio">Author Bio</a>
+      <a href="#tags-list">Tags List</a>
+    </nav>
+  </div>
+
+  <div class="page-wrapper">
+
+    <!-- 1. ARTICLE HEADER -->
+    <div id="article-header">
+      <span class="section-label">articleheader.html  |  ArticleHeader.java</span>
+      <div class="component-block">
+        <header class="tb-head">
+          <h1>Understanding Adobe Experience Manager: A Deep Dive</h1>
+          <p class="tb-meta">By <strong>Aman Kumar</strong> | 25 Oct 2024 | 4 min read</p>
+          <p class="tb-body">Adobe Experience Manager (AEM) is a comprehensive content management solution for building websites, mobile apps, and forms.
+
+In this article we explore Sling Models, HTL templating, and how OSGi bundles are structured inside an AEM project.</p>
+        </header>
+      </div>
+    </div>
+
+    <!-- 2. CODE SNIPPET -->
+    <div id="code-snippet">
+      <span class="section-label">codesnippet.html</span>
+      <div class="component-block">
+        <div class="inner">
+          <div class="tb-code">
+            <span class="tb-lang">Java</span>
+            <pre><code>@Model(adaptables = Resource.class,
+       defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+public class ArticleHeader {
+
+    @ValueMapValue
+    private String title;
+
+    @ValueMapValue
+    private Calendar publishDate;
+
+    public String getReadTime() {
+        if (articleText == null) return "1 min read";
+        int words = articleText.trim().split("\\s+").length;
+        int mins  = Math.max(1, (int) Math.ceil((double) words / 200));
+        return mins + " min read";
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. AUTHOR BIO -->
+    <div id="author-bio">
+      <span class="section-label">authorbio.html</span>
+      <div class="component-block">
+        <div class="inner">
+          <section class="tb-author">
+            <h3>About Aman Kumar</h3>
+            <p>Senior Java Developer with 7+ years of experience in AEM and enterprise CMS platforms. Passionate about clean code, OSGi, and Sling frameworks.</p>
+            <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. TAGS LIST -->
+    <div id="tags-list">
+      <span class="section-label">tagslist.html</span>
+      <div class="component-block">
+        <div class="inner">
+          <ul class="tb-tags">
+            <li>#AEM</li>
+            <li>#Java</li>
+            <li>#SlingModels</li>
+            <li>#OSGi</li>
+            <li>#HTL</li>
+            <li>#ContentManagement</li>
+            <li>#AdobeExperienceManager</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

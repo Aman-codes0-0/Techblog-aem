@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.techblog</groupId>
+    <artifactId>techblog</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Tech Blog - Reactor</name>
+    <description>TechBlog CMS built on Adobe Experience Manager</description>
+
+    <modules>
+        <module>core</module>
+        <module>ui.apps</module>
+    </modules>
+
+    <properties>
+        <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Sling dependency versions -->
+        <sling.api.version>2.27.2</sling.api.version>
+        <sling.models.api.version>1.5.0</sling.models.api.version>
+        <!-- OSGi annotations -->
+        <osgi.annotations.version>3.0.0</osgi.annotations.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Apache Sling API (provides Resource, SlingHttpServletRequest, etc.) -->
+            <dependency>
+                <groupId>org.apache.sling</groupId>
+                <artifactId>org.apache.sling.api</artifactId>
+                <version>${sling.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Sling Models API (@Model, @ValueMapValue, DefaultInjectionStrategy, etc.) -->
+            <dependency>
+                <groupId>org.apache.sling</groupId>
+                <artifactId>org.apache.sling.models.api</artifactId>
+                <version>${sling.models.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- OSGi Component / Service annotations -->
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.component.annotations</artifactId>
+                <version>${osgi.annotations.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- JCR API (javax.jcr.Node, etc.) -->
+            <dependency>
+                <groupId>javax.jcr</groupId>
+                <artifactId>jcr</artifactId>
+                <version>2.0</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

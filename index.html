@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TechBlog AEM — Enterprise CMS Architecture, Sling Models, OSGi, and HTL by Aman Kumar." />
+  <meta name="author" content="Aman Kumar" />
+  <title>TechBlog AEM — Enterprise CMS by Aman Kumar</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ========================================================
+       DESIGN SYSTEM & CSS VARIABLES
+       ======================================================== */
+    :root {
+      --primary: #d90429;
+      --primary-hover: #ef233c;
+      --primary-glow: rgba(217, 4, 41, 0.25);
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg-body: #0a0a0c;
+      --bg-surface: #121316;
+      --bg-card: #18191e;
+      --bg-card-hover: #1f2026;
+      --border: #282a33;
+      --border-highlight: #3c404f;
+      --text-main: #f4f5f8;
+      --text-muted: #9aa0b2;
+      --text-dim: #656c82;
+      --code-bg: #050507;
+      --nav-bg: rgba(10, 10, 12, 0.85);
+      --tag-bg: #20222a;
+      --tag-hover: #d90429;
+      --tag-text: #e2e4ec;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="light"] {
+      --bg-body: #f8f9fa;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f1f3f5;
+      --border: #e2e6eb;
+      --border-highlight: #cbd3dc;
+      --text-main: #111418;
+      --text-muted: #495057;
+      --text-dim: #868e96;
+      --code-bg: #121316;
+      --nav-bg: rgba(255, 255, 255, 0.88);
+      --tag-bg: #e9ecef;
+      --tag-hover: #d90429;
+      --tag-text: #212529;
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.7;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Reading Progress Bar */
+    #progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: transparent;
+      z-index: 1000;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #d90429, #ff4d6d);
+      box-shadow: 0 0 10px rgba(217, 4, 41, 0.7);
+      transition: width 0.1s ease-out;
+    }
+
+    /* Sticky Navigation */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 1.8rem;
+    }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.5px;
+    }
+    .brand-badge {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary);
+    }
+    .brand-tag {
+      background: var(--border);
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .btn-nav {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-nav:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff !important;
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 3rem;
+    }
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .sidebar { display: none; }
+    }
+
+    /* Main Article Area */
+    .main-content { min-width: 0; }
+
+    /* Component Badge Indicator */
+    .component-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: rgba(217, 4, 41, 0.08);
+      border: 1px solid rgba(217, 4, 41, 0.2);
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* Article Header */
+    .article-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2.2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary);
+    }
+    .article-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      line-height: 1.25;
+      letter-spacing: -1px;
+      margin-bottom: 1.2rem;
+      color: var(--text-main);
+    }
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.2rem;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      padding-bottom: 1.4rem;
+      margin-bottom: 1.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .author-highlight {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .read-time-pill {
+      background: var(--tag-bg);
+      color: var(--text-main);
+      padding: 0.2rem 0.65rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .article-lead {
+      font-size: 1.12rem;
+      color: var(--text-main);
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    /* Social Share & Action Bar */
+    .action-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 0;
+      margin: 1.5rem 0 2.5rem;
+      border-top: 1px dashed var(--border);
+      border-bottom: 1px dashed var(--border);
+    }
+    .reactions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .btn-react {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+    .btn-react:hover {
+      border-color: var(--primary);
+      transform: scale(1.04);
+    }
+    .btn-react.active {
+      background: rgba(217, 4, 41, 0.12);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .share-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .share-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+    .share-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* Typography & Sections */
+    .content-section {
+      margin-bottom: 2.8rem;
+    }
+    .content-section h2 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin: 0 0 1rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .content-section p {
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      font-size: 1.02rem;
+    }
+    .callout {
+      background: rgba(217, 4, 41, 0.05);
+      border-left: 4px solid var(--primary);
+      padding: 1.2rem 1.4rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+    .callout p {
+      color: var(--text-main);
+      margin: 0;
+      font-size: 0.96rem;
+    }
+
+    /* Code Snippet Component */
+    .code-container {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--primary);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 1.8rem 0;
+      box-shadow: 0 12px 28px -8px rgba(0,0,0,0.4);
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.2rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .code-lang-badge {
+      background: var(--primary);
+      color: #fff;
+      font-family: var(--font-code);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e4ec;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: var(--font-main);
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition);
+    }
+    .btn-copy:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .code-body {
+      padding: 1.2rem 1.4rem;
+      overflow-x: auto;
+    }
+    .code-body pre {
+      margin: 0;
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #f1f3f5;
+    }
+    /* Syntax highlights */
+    .token-kw { color: #ff7b72; font-weight: 600; }
+    .token-ann { color: #ffa657; font-weight: 600; }
+    .token-str { color: #a5d6ff; }
+    .token-type { color: #7ee787; }
+    .token-comment { color: #8b949e; font-style: italic; }
+
+    /* Author Bio Card Component */
+    .author-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 8px solid var(--primary);
+      border-radius: 12px;
+      padding: 1.8rem;
+      margin: 2.5rem 0;
+      display: flex;
+      gap: 1.6rem;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .author-avatar {
+      width: 76px;
+      height: 76px;
+      background: linear-gradient(135deg, #d90429, #2b2d42);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+      border: 3px solid var(--bg-card);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+    .author-info h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: var(--text-main);
+    }
+    .author-role {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .author-bio {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 0.9rem;
+      line-height: 1.6;
+    }
+    .author-links {
+      display: flex;
+      gap: 1.2rem;
+    }
+    .author-links a {
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: underline;
+      text-decoration-color: var(--primary);
+      text-underline-offset: 4px;
+      transition: color 0.2s;
+    }
+    .author-links a:hover { color: var(--primary); }
+
+    /* Tags Component */
+    .tags-container {
+      margin: 2rem 0;
+    }
+    .tags-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .tag-item {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 0.4rem 0.95rem;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      user-select: none;
+    }
+    .tag-item:hover, .tag-item.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* Newsletter Box */
+    .newsletter-card {
+      background: linear-gradient(135deg, rgba(217, 4, 41, 0.08), rgba(0, 0, 0, 0.02));
+      border: 1px solid rgba(217, 4, 41, 0.25);
+      border-radius: 14px;
+      padding: 2.2rem;
+      margin: 3.5rem 0 1rem;
+      text-align: center;
+    }
+    .newsletter-card h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+    .newsletter-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+    }
+    .newsletter-form {
+      display: flex;
+      max-width: 440px;
+      margin: 0 auto;
+      gap: 0.6rem;
+    }
+    .newsletter-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text-main);
+      font-family: var(--font-main);
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .newsletter-input:focus { border-color: var(--primary); }
+    .btn-subscribe {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.4rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-subscribe:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    /* Sticky Sidebar / Table of Contents */
+    .sidebar {
+      position: sticky;
+      top: 5rem;
+      height: fit-content;
+    }
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .sidebar-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    .toc-list {
+      list-style: none;
+    }
+    .toc-item {
+      margin-bottom: 0.7rem;
+    }
+    .toc-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      display: block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      border-left: 2px solid transparent;
+      transition: var(--transition);
+    }
+    .toc-link:hover, .toc-link.active {
+      color: var(--primary);
+      border-left-color: var(--primary);
+      background: rgba(217, 4, 41, 0.06);
+      padding-left: 0.75rem;
+    }
+
+    /* Recruiter / AEM Architecture Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.4rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.8rem;
+    }
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .arch-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+    .arch-table th, .arch-table td {
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+    }
+    .arch-table th {
+      background: var(--bg-surface);
+      color: var(--text-dim);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+    }
+    .arch-table code {
+      font-family: var(--font-code);
+      color: var(--primary);
+      font-size: 0.8rem;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #000;
+      color: #fff;
+      border: 1px solid var(--primary);
+      padding: 0.75rem 1.4rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 3000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      pointer-events: none;
+    }
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.88rem;
+    }
+    footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Reading Progress Indicator -->
+  <div id="progress-container"><div id="progress-bar"></div></div>
+
+  <!-- Sticky Navbar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <span class="brand-badge"></span>
+        TechBlog<span style="color:var(--primary);">.aem</span>
+        <span class="brand-tag">PORTFOLIO</span>
+      </a>
+      <div class="nav-actions">
+        <button class="btn-nav" id="btn-inspect" title="View AEM Architecture">
+          🧩 Inspect AEM Code
+        </button>
+        <button class="btn-nav" id="btn-theme" title="Toggle Dark/Light Mode">
+          🌙 Theme
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content Grid -->
+  <div class="container">
+
+    <!-- Main Reading Column -->
+    <main class="main-content">
+
+      <!-- COMPONENT 1: ARTICLE HEADER -->
+      <section id="overview" class="content-section">
+        <div class="component-label">
+          <span>Component:</span> ArticleHeader.java &middot; articleheader.html
+        </div>
+        <article class="article-header">
+          <h1 class="article-title">Enterprise AEM Architecture: Building High-Performance Sling Models & Components</h1>
+          <div class="meta-bar">
+            <div class="meta-item">
+              <span>By</span>
+              <span class="author-highlight">Aman Kumar</span>
+            </div>
+            <div class="meta-item">
+              <span>Published:</span>
+              <strong>25 Oct 2024</strong>
+            </div>
+            <div class="meta-item">
+              <span class="read-time-pill" id="calculated-read-time">4 min read</span>
+            </div>
+            <div class="meta-item">
+              <span>Stack:</span>
+              <strong style="color:var(--text-main);">AEM Cloud &middot; Java 11</strong>
+            </div>
+          </div>
+          <p class="article-lead" id="article-body-text">
+            Adobe Experience Manager (AEM) powers the digital experiences of global Fortune 500 enterprises. Building enterprise-grade applications requires mastering the relationship between OSGi bundles, Apache Sling Models, and JCR content nodes. 
+            In this architectural deep dive, we explore how clean domain models decouple backend business logic from HTL presentation, optimize cache performance with Dispatcher, and ensure resilient modular builds.
+          </p>
+        </article>
+      </section>
+
+      <!-- Action Toolbar (Reactions & Sharing) -->
+      <div class="action-toolbar">
+        <div class="reactions">
+          <button class="btn-react" id="btn-clap">
+            👏 <span id="clap-text">Clap</span> (<strong id="clap-count">42</strong>)
+          </button>
+          <button class="btn-react" id="btn-like">
+            ❤️ <span id="like-text">Like</span> (<strong id="like-count">88</strong>)
+          </button>
+        </div>
+        <div class="share-group">
+          <span style="font-size:0.85rem; color:var(--text-dim); margin-right:0.3rem;">Share:</span>
+          <button class="share-btn" id="share-copy" title="Copy Link to Clipboard">📋</button>
+          <a class="share-btn" id="share-x" target="_blank" rel="noopener" title="Share on X / Twitter">𝕏</a>
+          <a class="share-btn" id="share-li" target="_blank" rel="noopener" title="Share on LinkedIn">in</a>
+          <a class="share-btn" id="share-wa" target="_blank" rel="noopener" title="Share on WhatsApp">💬</a>
+        </div>
+      </div>
+
+      <!-- SECTION 2: ARCHITECTURE & SLING MODELS -->
+      <section id="sling-models" class="content-section">
+        <h2>1. Apache Sling Models: Clean Separation of Concerns</h2>
+        <p>
+          In legacy AEM, JSP scripts often contained tangled business logic and JCR query traversal. Modern AEM strictly utilizes <strong>Sling Models</strong> — POJOs annotated with <code>@Model</code> that automatically map JCR ValueMaps into strongly-typed Java objects.
+        </p>
+
+        <div class="callout">
+          <p>
+            <strong>Engineering Principle:</strong> Always use <code>DefaultInjectionStrategy.OPTIONAL</code> to protect page rendering against unconfigured dialog values during authoring.
+          </p>
+        </div>
+
+        <!-- COMPONENT 2: CODE SNIPPET -->
+        <div class="component-label">
+          <span>Component:</span> CodeSnippet &middot; ArticleHeader.java
+        </div>
+        <div class="code-container">
+          <div class="code-header">
+            <span class="code-lang-badge">JAVA 11 (OSGi Bundle)</span>
+            <button class="btn-copy" data-target="code-java">
+              <span>📋</span> Copy Code
+            </button>
+          </div>
+          <div class="code-body">
+            <pre id="code-java"><code><span class="token-ann">@Model</span>(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+<span class="token-kw">public class</span> <span class="token-type">ArticleHeader</span> {
+
+    <span class="token-kw">private static final int</span> WORDS_PER_MINUTE = 200;
+
+    <span class="token-ann">@ValueMapValue</span>
+    <span class="token-kw">private</span> <span class="token-type">String</span> title;
+
+    <span class="token-ann">@ValueMapValue</span>
+    <span class="token-kw">private</span> <span class="token-type">String</span> author;
+
+    <span class="token-ann">@ValueMapValue</span>
+    <span class="token-kw">private</span> <span class="token-type">Calendar</span> publishDate;
+
+    <span class="token-ann">@ValueMapValue</span>
+    <span class="token-kw">private</span> <span class="token-type">String</span> articleText;
+
+    <span class="token-comment">// Calculates estimated reading time automatically from word count</span>
+    <span class="token-kw">public</span> <span class="token-type">String</span> <span class="token-type">getReadTime</span>() {
+        <span class="token-kw">if</span> (articleText == null || articleText.trim().isEmpty()) {
+            <span class="token-kw">return</span> <span class="token-str">"1 min read"</span>;
+        }
+        <span class="token-kw">int</span> words = articleText.trim().split(<span class="token-str">"\\s+"</span>).length;
+        <span class="token-kw">int</span> minutes = Math.max(1, (<span class="token-kw">int</span>) Math.ceil((<span class="token-kw">double</span>) words / WORDS_PER_MINUTE));
+        <span class="token-kw">return</span> minutes + <span class="token-str">" min read"</span>;
+    }
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: HTL TEMPLATING -->
+      <section id="htl-templates" class="content-section">
+        <h2>2. HTL Presentation & Clientlibs</h2>
+        <p>
+          HTL (HTML Template Language) provides built-in XSS protection and context-aware escaping. The template delegates all computation to our compiled OSGi Sling Model using <code>data-sly-use.model</code>.
+        </p>
+
+        <div class="component-label">
+          <span>Component:</span> articleheader.html (HTL)
+        </div>
+        <div class="code-container">
+          <div class="code-header">
+            <span class="code-lang-badge">HTL / HTML5</span>
+            <button class="btn-copy" data-target="code-htl">
+              <span>📋</span> Copy Code
+            </button>
+          </div>
+          <div class="code-body">
+            <pre id="code-htl"><code><span class="token-comment">&lt;!-- Load TechBlog CSS Clientlib --&gt;</span>
+&lt;sly data-sly-use.clientlib=<span class="token-str">"core/wcm/components/commons/v1/templates/clientlib.html"</span>/&gt;
+&lt;sly data-sly-call=<span class="token-str">"${clientlib.css @ categories='techblog.blog'}"</span>/&gt;
+
+&lt;header class=<span class="token-str">"tb-head"</span> data-sly-use.model=<span class="token-str">"com.techblog.core.models.ArticleHeader"</span>&gt;
+  &lt;h1&gt;${model.title}&lt;/h1&gt;
+  &lt;p class=<span class="token-str">"tb-meta"</span>&gt;By &lt;strong&gt;${model.author}&lt;/strong&gt; | ${model.formattedDate} | ${model.readTime}&lt;/p&gt;
+  &lt;p class=<span class="token-str">"tb-body"</span>&gt;${model.articleText}&lt;/p&gt;
+&lt;/header&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPONENT 3: TAGS LIST -->
+      <section id="topics" class="content-section">
+        <h2>3. Explore Topics</h2>
+        <div class="component-label">
+          <span>Component:</span> TagsList &middot; tagslist.html
+        </div>
+        <div class="tags-container">
+          <ul class="tags-list">
+            <li class="tag-item active">#AEM</li>
+            <li class="tag-item">#Java</li>
+            <li class="tag-item">#SlingModels</li>
+            <li class="tag-item">#OSGi</li>
+            <li class="tag-item">#HTL</li>
+            <li class="tag-item">#ContentPackage</li>
+            <li class="tag-item">#AdobeExperienceManager</li>
+            <li class="tag-item">#CloudService</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- COMPONENT 4: AUTHOR BIO -->
+      <section id="author" class="content-section">
+        <h2>4. About the Author</h2>
+        <div class="component-label">
+          <span>Component:</span> AuthorBio &middot; authorbio.html
+        </div>
+        <div class="author-card">
+          <div class="author-avatar">AK</div>
+          <div class="author-info">
+            <h3>Aman Kumar</h3>
+            <div class="author-role">AEM Engineer &amp; Full Stack Developer</div>
+            <p class="author-bio">
+              Specializing in enterprise content management, Adobe Experience Manager (AEM as a Cloud Service), Java OSGi backends, and high-performance web frontends. Passionate about clean code and scalable architecture.
+            </p>
+            <div class="author-links">
+              <a href="https://github.com" target="_blank" rel="noopener">GitHub Profile</a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+              <a href="#newsletter">Subscribe</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEWSLETTER / SUBSCRIBE COMPONENT -->
+      <section id="newsletter" class="newsletter-card">
+        <h3>Stay Ahead with AEM Architecture</h3>
+        <p>Subscribe to receive deep dives on OSGi lifecycle, Sling Models, Dispatcher caching, and Cloud Manager pipelines.</p>
+        <form class="newsletter-form" id="newsletter-form">
+          <input type="email" class="newsletter-input" id="subscriber-email" placeholder="Enter your developer email..." required />
+          <button type="submit" class="btn-subscribe">Subscribe</button>
+        </form>
+      </section>
+
+    </main>
+
+    <!-- Sidebar: Table of Contents & Info -->
+    <aside class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-title">Table of Contents</div>
+        <ul class="toc-list">
+          <li class="toc-item"><a href="#overview" class="toc-link active">Overview</a></li>
+          <li class="toc-item"><a href="#sling-models" class="toc-link">1. Sling Models</a></li>
+          <li class="toc-item"><a href="#htl-templates" class="toc-link">2. HTL Templates</a></li>
+          <li class="toc-item"><a href="#topics" class="toc-link">3. Topics &amp; Tags</a></li>
+          <li class="toc-item"><a href="#author" class="toc-link">4. About Aman Kumar</a></li>
+          <li class="toc-item"><a href="#newsletter" class="toc-link">Newsletter</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Project Status</div>
+        <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:0.8rem;">
+          Build: <strong style="color:#2ecc71;">PASSING</strong><br />
+          Core Bundle: <code>techblog.core</code><br />
+          UI Package: <code>techblog.ui.apps</code>
+        </p>
+        <button class="btn-nav btn-primary" style="width:100%; justify-content:center;" onclick="document.getElementById('btn-inspect').click();">
+          Inspect Architecture
+        </button>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- AEM Architecture Inspector Modal -->
+  <div class="modal-overlay" id="modal-arch">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">🧩 AEM Component &amp; Bundle Mapping</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <p style="font-size:0.92rem; color:var(--text-muted); margin-bottom:1rem;">
+        This project follows Adobe's standard multi-module Maven structure, strictly separating OSGi backend logic from JCR content packages:
+      </p>
+
+      <table class="arch-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Backend Model (Java)</th>
+            <th>Frontend Template (HTL)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Article Header</strong></td>
+            <td><code>com.techblog.core.models.ArticleHeader</code></td>
+            <td><code>/apps/techblog/components/articleheader</code></td>
+          </tr>
+          <tr>
+            <td><strong>Code Snippet</strong></td>
+            <td><em>JCR ValueMap properties</em></td>
+            <td><code>/apps/techblog/components/codesnippet</code></td>
+          </tr>
+          <tr>
+            <td><strong>Author Bio</strong></td>
+            <td><em>JCR ValueMap properties</em></td>
+            <td><code>/apps/techblog/components/authorbio</code></td>
+          </tr>
+          <tr>
+            <td><strong>Tags List</strong></td>
+            <td><em>Multi-value String array</em></td>
+            <td><code>/apps/techblog/components/tagslist</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 style="font-size:0.95rem; margin:1.2rem 0 0.5rem; color:var(--text-main);">One-Click Local Deployment</h4>
+      <p style="font-size:0.86rem; color:var(--text-muted);">
+        Run <code>setup-and-deploy.bat</code> from terminal to automatically compile the OSGi bundle and deploy the content package to <code>http://localhost:4502</code>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast">Message</div>
+
+  <!-- Footer -->
+  <footer>
+    <p>TechBlog AEM &middot; Created by <strong>Aman Kumar</strong> &middot; Built with Java 11, Apache Sling &amp; AEM</p>
+  </footer>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    // 1. Reading Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    // 2. Dark / Light Mode Toggle
+    const themeBtn = document.getElementById('btn-theme');
+    const savedTheme = localStorage.getItem('techblog-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeBtn(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('techblog-theme', next);
+      updateThemeBtn(next);
+      showToast(next === 'dark' ? '🌙 Dark Mode Activated' : '☀️ Light Mode Activated');
+    });
+
+    function updateThemeBtn(t) {
+      themeBtn.innerHTML = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+    }
+
+    // 3. Toast Notifications
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 2400);
+    }
+
+    // 4. Copy Code Snippet Buttons
+    document.querySelectorAll('.btn-copy').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const codeText = document.getElementById(targetId).innerText;
+        navigator.clipboard.writeText(codeText).then(() => {
+          const original = btn.innerHTML;
+          btn.innerHTML = '<span>✅</span> Copied!';
+          btn.style.background = '#2ecc71';
+          btn.style.borderColor = '#2ecc71';
+          showToast('Code copied to clipboard!');
+          setTimeout(() => {
+            btn.innerHTML = original;
+            btn.style.background = '';
+            btn.style.borderColor = '';
+          }, 2000);
+        });
+      });
+    });
+
+    // 5. Reactions (Clap & Like with localStorage)
+    const clapBtn = document.getElementById('btn-clap');
+    const clapCount = document.getElementById('clap-count');
+    let claps = parseInt(localStorage.getItem('techblog-claps') || '42', 10);
+    clapCount.innerText = claps;
+
+    clapBtn.addEventListener('click', () => {
+      claps++;
+      clapCount.innerText = claps;
+      localStorage.setItem('techblog-claps', claps);
+      clapBtn.classList.add('active');
+      showToast('👏 Thanks for the applause!');
+    });
+
+    const likeBtn = document.getElementById('btn-like');
+    const likeCount = document.getElementById('like-count');
+    let likes = parseInt(localStorage.getItem('techblog-likes') || '88', 10);
+    likeCount.innerText = likes;
+
+    likeBtn.addEventListener('click', () => {
+      likes++;
+      likeCount.innerText = likes;
+      localStorage.setItem('techblog-likes', likes);
+      likeBtn.classList.add('active');
+      showToast('❤️ Thank you for liking!');
+    });
+
+    // 6. Social Share Buttons
+    document.getElementById('share-copy').addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href);
+      showToast('🔗 Page link copied to clipboard!');
+    });
+
+    const pageUrl = encodeURIComponent(window.location.href);
+    const pageTitle = encodeURIComponent('Enterprise AEM Architecture by Aman Kumar');
+    document.getElementById('share-x').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+    document.getElementById('share-li').href = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`;
+    document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${pageTitle}%20${pageUrl}`;
+
+    // 7. Table of Contents Scroll-Spy
+    const sections = document.querySelectorAll('.content-section');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => {
+        const top = sec.offsetTop - 120;
+        if (pageYOffset >= top) {
+          current = sec.getAttribute('id');
+        }
+      });
+      tocLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // 8. Interactive Tags
+    document.querySelectorAll('.tag-item').forEach(tag => {
+      tag.addEventListener('click', () => {
+        tag.classList.toggle('active');
+        showToast(`Filtered by ${tag.innerText}`);
+      });
+    });
+
+    // 9. Newsletter Subscription
+    document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('subscriber-email').value;
+      showToast(`🎉 Subscribed! Welcome, ${email}`);
+      document.getElementById('subscriber-email').value = '';
+    });
+
+    // 10. AEM Inspector Modal
+    const modal = document.getElementById('modal-arch');
+    document.getElementById('btn-inspect').addEventListener('click', () => {
+      modal.classList.add('open');
+    });
+    document.getElementById('modal-close').addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+  </script>
+</body>
+</html>

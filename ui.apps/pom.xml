@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.techblog</groupId>
+        <artifactId>techblog</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>techblog.ui.apps</artifactId>
+    <packaging>content-package</packaging>
+
+    <name>Tech Blog - UI Apps</name>
+    <description>AEM content package containing HTL components, dialogs, and clientlibs for TechBlog</description>
+
+    <build>
+        <plugins>
+            <!-- FileVault content package plugin -->
+            <plugin>
+                <groupId>org.apache.jackrabbit</groupId>
+                <artifactId>filevault-package-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <packageType>application</packageType>
+                    <allowIndexDefinitions>false</allowIndexDefinitions>
+                    <group>com.techblog</group>
+                    <name>techblog.ui.apps</name>
+                    <version>${project.version}</version>
+                    <filterSource>src/main/content/META-INF/vault/filter.xml</filterSource>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

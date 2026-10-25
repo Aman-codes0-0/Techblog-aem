@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.techblog</groupId>
+        <artifactId>techblog</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>techblog.core</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>Tech Blog - Core</name>
+    <description>OSGi bundle containing Java Sling Models for TechBlog AEM components</description>
+
+    <dependencies>
+        <!-- Apache Sling API - provides Resource, SlingHttpServletRequest -->
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.api</artifactId>
+        </dependency>
+
+        <!-- Sling Models - provides @Model, @ValueMapValue, DefaultInjectionStrategy -->
+        <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.models.api</artifactId>
+        </dependency>
+
+        <!-- JCR API - provides Calendar-based date fields from JCR properties -->
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- OSGi bundle packaging plugin -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>5.1.9</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>com.techblog.core</Bundle-SymbolicName>
+                        <Bundle-Name>Tech Blog - Core</Bundle-Name>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <!-- Export the models package so it is visible to Sling Models scanner -->
+                        <Export-Package>com.techblog.core.models</Export-Package>
+                        <!-- Sling-Model-Packages tells the Sling Models runtime where to scan -->
+                        <Sling-Model-Packages>com.techblog.core.models</Sling-Model-Packages>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
