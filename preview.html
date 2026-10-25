@@ -2,101 +2,327 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>TechBlog AEM - Component Preview</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
+    /* ── Reset & Base ──────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: "Inter", sans-serif; background: #f4f4f4; color: #000; min-height: 100vh; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f4f4f4;
+      color: #000;
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
+    /* ── Sticky Top Bar (Responsive Nav) ────────────────── */
     .preview-bar {
-      position: sticky; top: 0; z-index: 100;
-      background: #000; color: #fff;
-      padding: 0.6rem 2rem;
-      display: flex; align-items: center; gap: 1rem;
-      border-bottom: 3px solid #d90429; font-size: 0.85rem; font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #000;
+      color: #fff;
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      border-bottom: 3px solid #d90429;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .preview-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
     }
     .preview-bar .badge {
-      background: #d90429; color: #fff;
-      padding: 0.2rem 0.6rem; border-radius: 4px;
-      font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase;
+      background: #d90429;
+      color: #fff;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
     }
-    .preview-bar nav { display: flex; gap: 1.2rem; margin-left: auto; }
-    .preview-bar nav a { color: #fff; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; }
+    .preview-title {
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .preview-bar nav {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0.2rem 0;
+    }
+    .preview-bar nav::-webkit-scrollbar { display: none; }
+    .preview-bar nav a {
+      color: #fff;
+      text-decoration: none;
+      opacity: 0.75;
+      font-size: 0.82rem;
+      transition: opacity 0.2s, color 0.2s;
+    }
     .preview-bar nav a:hover { opacity: 1; color: #d90429; }
 
-    .page-wrapper { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    /* ── Page Wrapper ──────────────────────────────────── */
+    .page-wrapper {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
 
+    /* ── Component Box & Label ─────────────────────────── */
     .section-label {
-      display: inline-block; background: #000; color: #fff;
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-      padding: 0.2rem 0.6rem; border-radius: 3px 3px 0 0; margin-bottom: 0;
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px 4px 0 0;
+      margin-bottom: 0;
+      word-break: break-all;
     }
     .component-block {
-      margin-bottom: 2.5rem; border-radius: 0 6px 6px 6px;
-      overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); background: #fff;
+      margin-bottom: 2rem;
+      border-radius: 0 8px 8px 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+      background: #fff;
     }
 
-    /* === ACTUAL COMPONENT STYLES (from blog.css) === */
+    /* ── ACTUAL COMPONENT THEME (blog.css) ─────────────── */
     :root { --tb-black: #000; --tb-white: #fff; --tb-red: #d90429; }
 
-    .tb-head { background: #fff; color: #000; padding: 1.5rem 1.8rem; border-bottom: 4px solid #d90429; }
-    .tb-head h1 { font-size: 2.4rem; font-weight: 800; margin: 0 0 0.4rem; letter-spacing: -0.5px; line-height: 1.15; }
-    .tb-meta { color: #000; font-size: 0.9rem; margin: 0 0 1rem; }
+    /* 1. Article Header */
+    .tb-head {
+      background: #fff;
+      color: #000;
+      padding: 1.6rem 1.8rem;
+      border-bottom: 4px solid #d90429;
+    }
+    .tb-head h1 {
+      font-size: clamp(1.45rem, 3.5vw + 0.6rem, 2.3rem);
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+      word-wrap: break-word;
+    }
+    .tb-meta {
+      color: #333;
+      font-size: clamp(0.8rem, 2vw + 0.3rem, 0.9rem);
+      margin: 0 0 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
     .tb-meta strong { color: #d90429; }
-    .tb-body { line-height: 1.8; white-space: pre-line; color: #000; }
+    .tb-body {
+      line-height: 1.8;
+      white-space: pre-line;
+      color: #222;
+      font-size: clamp(0.92rem, 1.5vw + 0.4rem, 1.02rem);
+    }
 
-    .tb-code { background: #000; color: #fff; border-left: 5px solid #d90429; border-radius: 6px; padding: 1rem 1.2rem; overflow-x: auto; }
-    .tb-lang { background: #d90429; color: #fff; padding: 0.15rem 0.7rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-    .tb-code pre { margin: 0.7rem 0 0; color: #fff; font-family: "JetBrains Mono", monospace; font-size: 0.88rem; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+    /* 2. Code Snippet */
+    .inner { padding: 1.2rem 1.4rem; }
+    .tb-code {
+      background: #000;
+      color: #fff;
+      border-left: 5px solid #d90429;
+      border-radius: 6px;
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tb-lang {
+      display: inline-block;
+      background: #d90429;
+      color: #fff;
+      padding: 0.15rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tb-code pre {
+      margin: 0.75rem 0 0;
+      color: #fff;
+      font-family: "JetBrains Mono", monospace;
+      font-size: clamp(0.78rem, 2vw + 0.2rem, 0.88rem);
+      line-height: 1.65;
+      white-space: pre;
+      overflow-x: auto;
+    }
 
-    .tb-author { background: #fff; color: #000; border: 2px solid #000; border-left: 8px solid #d90429; padding: 1rem 1.3rem; border-radius: 4px; }
-    .tb-author h3 { margin-top: 0; margin-bottom: 0.4rem; font-size: 1.1rem; }
-    .tb-author p { margin-bottom: 0.8rem; line-height: 1.6; color: #333; }
-    .tb-author a { color: #000; font-weight: 700; margin-right: 1rem; text-decoration: underline; text-decoration-color: #d90429; text-underline-offset: 4px; transition: color 0.2s; }
+    /* 3. Author Bio */
+    .tb-author {
+      background: #fff;
+      color: #000;
+      border: 2px solid #000;
+      border-left: 8px solid #d90429;
+      padding: 1.2rem 1.4rem;
+      border-radius: 6px;
+    }
+    .tb-author h3 {
+      margin-top: 0;
+      margin-bottom: 0.45rem;
+      font-size: clamp(1.05rem, 2.5vw + 0.3rem, 1.2rem);
+      font-weight: 700;
+    }
+    .tb-author p {
+      margin-bottom: 0.9rem;
+      line-height: 1.6;
+      color: #333;
+      font-size: clamp(0.88rem, 1.5vw + 0.4rem, 0.96rem);
+    }
+    .author-links-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+    }
+    .tb-author a {
+      color: #000;
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: underline;
+      text-decoration-color: #d90429;
+      text-underline-offset: 4px;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+    }
     .tb-author a:hover { color: #d90429; }
 
-    .tb-tags { list-style: none; display: flex; gap: 0.5rem; padding: 0; flex-wrap: wrap; }
-    .tb-tags li { background: #000; color: #fff; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: default; transition: background 0.2s; }
-    .tb-tags li:hover { background: #d90429; }
+    /* 4. Tags List */
+    .tb-tags {
+      list-style: none;
+      display: flex;
+      gap: 0.5rem;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+    .tb-tags li {
+      background: #000;
+      color: #fff;
+      padding: 0.35rem 0.8rem;
+      border-radius: 4px;
+      font-size: clamp(0.78rem, 2vw + 0.1rem, 0.85rem);
+      font-weight: 600;
+      cursor: default;
+      transition: background 0.2s, transform 0.15s;
+      user-select: none;
+    }
+    .tb-tags li:hover {
+      background: #d90429;
+      transform: translateY(-1px);
+    }
 
-    .inner { padding: 1.2rem 1.4rem; }
+    /* ── Mobile & Tablet Media Queries ─────────────────── */
+    @media (max-width: 640px) {
+      .preview-bar {
+        padding: 0.5rem 0.9rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+      }
+      .preview-bar nav {
+        width: 100%;
+        gap: 0.8rem;
+      }
+      .preview-title { font-size: 0.78rem; }
+
+      .page-wrapper {
+        padding: 1.2rem 0.75rem 3rem;
+      }
+      .tb-head {
+        padding: 1.2rem 1rem;
+      }
+      .inner {
+        padding: 0.9rem 0.85rem;
+      }
+      .tb-code {
+        padding: 0.85rem 0.8rem;
+      }
+      .tb-author {
+        padding: 1rem 0.9rem;
+        border-left-width: 6px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .preview-bar {
+        padding: 0.4rem 0.6rem;
+      }
+      .page-wrapper {
+        padding: 1rem 0.5rem 2.5rem;
+      }
+      .tb-head {
+        padding: 1rem 0.75rem;
+      }
+      .tb-tags li {
+        padding: 0.3rem 0.65rem;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <div class="preview-bar">
-    <span class="badge">Preview</span>
-    <span>TechBlog AEM - Component Preview</span>
+  <!-- Responsive Sticky Navbar -->
+  <header class="preview-bar">
+    <div class="preview-brand">
+      <span class="badge">Preview</span>
+      <span class="preview-title">TechBlog AEM &middot; Components</span>
+    </div>
     <nav>
-      <a href="#article-header">Article Header</a>
-      <a href="#code-snippet">Code Snippet</a>
-      <a href="#author-bio">Author Bio</a>
-      <a href="#tags-list">Tags List</a>
+      <a href="#article-header">Header</a>
+      <a href="#code-snippet">Code</a>
+      <a href="#author-bio">Author</a>
+      <a href="#tags-list">Tags</a>
     </nav>
-  </div>
+  </header>
 
-  <div class="page-wrapper">
+  <main class="page-wrapper">
 
     <!-- 1. ARTICLE HEADER -->
-    <div id="article-header">
-      <span class="section-label">articleheader.html  |  ArticleHeader.java</span>
+    <section id="article-header">
+      <span class="section-label">articleheader.html &middot; ArticleHeader.java</span>
       <div class="component-block">
         <header class="tb-head">
           <h1>Understanding Adobe Experience Manager: A Deep Dive</h1>
-          <p class="tb-meta">By <strong>Aman Kumar</strong> | 25 Oct 2024 | 4 min read</p>
+          <p class="tb-meta">
+            <span>By <strong>Aman Kumar</strong></span>
+            <span>&middot;</span>
+            <span>25 Oct 2024</span>
+            <span>&middot;</span>
+            <span>4 min read</span>
+          </p>
           <p class="tb-body">Adobe Experience Manager (AEM) is a comprehensive content management solution for building websites, mobile apps, and forms.
 
 In this article we explore Sling Models, HTL templating, and how OSGi bundles are structured inside an AEM project.</p>
         </header>
       </div>
-    </div>
+    </section>
 
     <!-- 2. CODE SNIPPET -->
-    <div id="code-snippet">
+    <section id="code-snippet">
       <span class="section-label">codesnippet.html</span>
       <div class="component-block">
         <div class="inner">
@@ -122,25 +348,27 @@ public class ArticleHeader {
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- 3. AUTHOR BIO -->
-    <div id="author-bio">
+    <section id="author-bio">
       <span class="section-label">authorbio.html</span>
       <div class="component-block">
         <div class="inner">
-          <section class="tb-author">
+          <div class="tb-author">
             <h3>About Aman Kumar</h3>
             <p>Senior Java Developer with 7+ years of experience in AEM and enterprise CMS platforms. Passionate about clean code, OSGi, and Sling frameworks.</p>
-            <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
-          </section>
+            <div class="author-links-group">
+              <a href="https://github.com/Aman-codes0-0" target="_blank" rel="noopener">GitHub</a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- 4. TAGS LIST -->
-    <div id="tags-list">
+    <section id="tags-list">
       <span class="section-label">tagslist.html</span>
       <div class="component-block">
         <div class="inner">
@@ -155,8 +383,8 @@ public class ArticleHeader {
           </ul>
         </div>
       </div>
-    </div>
+    </section>
 
-  </div>
+  </main>
 </body>
 </html>
