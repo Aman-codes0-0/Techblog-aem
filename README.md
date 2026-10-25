@@ -11,7 +11,7 @@ Featuring custom authorable components backed by **Apache Sling Models**, contex
 
 ---
 
-## 🌟 Live Demo & Portfolio
+## 🌟 Live Demo
 
 - **Live Web Application:** [https://aman-codes0-0.github.io/Techblog-aem/](https://aman-codes0-0.github.io/Techblog-aem/)
 - **Local Web Preview:** Simply open [`index.html`](index.html) in any modern browser — no AEM installation required!
