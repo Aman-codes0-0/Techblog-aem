@@ -4,7 +4,7 @@
 [![Java](https://img.shields.io/badge/Java-11%20LTS-orange.svg?logo=java)](https://adoptium.net/)
 [![Maven](https://img.shields.io/badge/Maven-3.9-blue.svg?logo=apache-maven)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Author](https://img.shields.io/badge/Author-Aman%20Kumar-black.svg)](https://github.com)
+[![Author](https://img.shields.io/badge/Author-Aman%20Kumar-black.svg)](https://github.com/Aman-codes0-0)
 
 A high-performance technical blog platform engineered for **Adobe Experience Manager (AEM as a Cloud Service)**.  
 Featuring custom authorable components backed by **Apache Sling Models**, context-aware **HTL templating**, an **OSGi core bundle**, and a standalone **Live Interactive Web Showroom** with dark/light themes and real-time reading calculation.
@@ -13,7 +13,7 @@ Featuring custom authorable components backed by **Apache Sling Models**, contex
 
 ## 🌟 Live Demo & Portfolio
 
-- **Live Web Application:** [View on GitHub Pages](https://github.com) *(Deploy with 1-click via GitHub Pages)*
+- **Live Web Application:** [https://aman-codes0-0.github.io/Techblog-aem/](https://aman-codes0-0.github.io/Techblog-aem/)
 - **Local Web Preview:** Simply open [`index.html`](index.html) in any modern browser — no AEM installation required!
 
 ---
@@ -138,7 +138,7 @@ To make your blog accessible to anyone over the internet:
 2. On GitHub, go to your repository **Settings** -> **Pages**.
 3. Under **Build and deployment** -> **Branch**, select `main` and root `/`, then click **Save**.
 4. Within 1 minute, your blog will be live at:
-   `https://<YOUR-USERNAME>.github.io/techblog-aem/`
+   `https://aman-codes0-0.github.io/Techblog-aem/`
 
 ---
 
@@ -173,5 +173,5 @@ HTL automatically enforces context-aware XSS escaping (HTML, attribute, URI, JS 
 
 **Aman Kumar**  
 AEM Engineer & Full Stack Developer  
-- **GitHub:** [@AmanKumar](https://github.com)  
+- **GitHub:** [@Aman-codes0-0](https://github.com/Aman-codes0-0)
 - **LinkedIn:** [Aman Kumar](https://linkedin.com)  
