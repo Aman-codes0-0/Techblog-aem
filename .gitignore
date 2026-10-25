@@ -1,4 +1,4 @@
-﻿# Maven
+# Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -29,4 +29,4 @@ desktop.ini
 # Temp and Logs
 *.log
 *.tmp
-techblog/
+/techblog/

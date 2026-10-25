@@ -1,0 +1,21 @@
+/* TechBlog theme: only black, white and red */
+:root{--tb-black:#000;--tb-white:#fff;--tb-red:#d90429}
+
+.tb-head{background:var(--tb-white);color:var(--tb-black);padding:1.5rem 0;border-bottom:4px solid var(--tb-red);margin-bottom:1.5rem}
+.tb-head h1{font-size:2.4rem;font-weight:800;margin:0 0 .4rem;letter-spacing:-.5px}
+.tb-meta{color:var(--tb-black);font-size:.9rem;margin:0 0 1rem}
+.tb-meta strong{color:var(--tb-red)}
+.tb-body{line-height:1.8;white-space:pre-line;color:var(--tb-black)}
+
+.tb-code{background:var(--tb-black);color:var(--tb-white);border-left:5px solid var(--tb-red);border-radius:6px;padding:1rem 1.2rem;margin:1.5rem 0;overflow-x:auto}
+.tb-lang{background:var(--tb-red);color:var(--tb-white);padding:.15rem .7rem;border-radius:4px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.tb-code pre{margin:.7rem 0 0;color:var(--tb-white)}
+
+.tb-author{background:var(--tb-white);color:var(--tb-black);border:2px solid var(--tb-black);border-left:8px solid var(--tb-red);padding:1rem 1.3rem;margin:1.5rem 0;border-radius:4px}
+.tb-author h3{margin-top:0}
+.tb-author a{color:var(--tb-black);font-weight:700;margin-right:1rem;text-decoration:underline;text-decoration-color:var(--tb-red);text-underline-offset:4px}
+.tb-author a:hover{color:var(--tb-red)}
+
+.tb-tags{list-style:none;display:flex;gap:.5rem;padding:0;flex-wrap:wrap}
+.tb-tags li{background:var(--tb-black);color:var(--tb-white);padding:.3rem .8rem;border-radius:4px;font-size:.85rem;font-weight:600}
+.tb-tags li:hover{background:var(--tb-red)}

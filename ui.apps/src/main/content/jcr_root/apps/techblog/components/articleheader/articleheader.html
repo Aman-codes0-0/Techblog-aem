@@ -1,0 +1,7 @@
+<sly data-sly-use.clientlib="core/wcm/components/commons/v1/templates/clientlib.html"/>
+<sly data-sly-call="${clientlib.css @ categories='techblog.blog'}"/>
+<header class="tb-head" data-sly-use.model="com.techblog.core.models.ArticleHeader">
+  <h1>${model.title}</h1>
+  <p class="tb-meta">By <strong>${model.author}</strong> | ${model.formattedDate} | ${model.readTime}</p>
+  <p class="tb-body">${model.articleText}</p>
+</header>
